@@ -6,11 +6,11 @@ export async function up(knex: Knex): Promise<void> {
         table.string('name').notNullable()
         table.string('slug').nullable()
         table.timestamp('created_at').defaultTo(knex.raw('CURRENT_TIMESTAMP'))
-        // table. location
+        table.string('location_type', 10).defaultTo('Point')
+        table.point('location_coordinates').notNullable()
+        table.string('location_address').notNullable()
         table.string('photo').nullable()
         table.integer('author').references('users.id').notNullable()
-
-        console.error('location implementation not completed')
     })
 }
 
