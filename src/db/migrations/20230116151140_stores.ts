@@ -10,10 +10,10 @@ export async function up(knex: Knex): Promise<void> {
         table.point('location_coordinates').notNullable()
         table.string('location_address').notNullable()
         table.string('photo').nullable()
-        table.integer('author').references('users.id').notNullable()
+        table.integer('author').unsigned().notNullable().references('users.id')
     })
 }
 
 export async function down(knex: Knex): Promise<void> {
-    return knex.schema.dropTable('stores')
+    return knex.schema.dropTableIfExists('stores')
 }

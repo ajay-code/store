@@ -24,5 +24,5 @@ export const up = (knex: Knex): Promise<void> => {
 }
 
 export const down = (knex: Knex): Promise<void> => {
-    return knex.schema.dropTable('users')
+    return knex.schema.dropTableIfExists('users')
 }
