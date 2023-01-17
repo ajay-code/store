@@ -1,5 +1,6 @@
 import './loadEnv.js'
 import DB from './database.config.js'
+import EMAIL from './email.config.js'
 
 const NODE_ENV = process.env.NODE_ENV || 'development'
 const BASE_URL = process.env.BASE_URL || 'http://localhost'
@@ -18,4 +19,5 @@ export default {
     API_URL,
     APP_KEY,
     DB,
+    EMAIL,
 }

@@ -1,7 +1,8 @@
-import { User } from '#src/models/user.model.js'
+import getUserModel, { User } from '#src/models/user.model.js'
 import { loginSchema, registerSchema } from '#src/validators/auth.validators.js'
 import { Knex } from 'knex'
 import { z } from 'zod'
+import { randomBytes } from 'node:crypto'
 import passwordService from './password.service.js'
 
 class AuthService {
@@ -38,6 +39,19 @@ class AuthService {
         }
 
         return user
+    }
+
+    async generateResetPasswordToken(user: User) {
+        const User = getUserModel()
+        const resetPasswordToken = randomBytes(32).toString('hex')
+        const resetPasswordExpires = Date.now() + 3600000
+
+        await User.update({
+            reset_password_expires: new Date(resetPasswordExpires),
+            reset_password_token: resetPasswordToken,
+        }).where('id', user.id)
+
+        return resetPasswordToken
     }
 }
 
