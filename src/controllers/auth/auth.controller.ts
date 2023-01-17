@@ -31,7 +31,6 @@ export const login = async (req: Request, res: Response) => {
     const User = getUserModel()
     const user = await authService.loginUser(credentials, User)
     const token = makeJwtTokenForUser(user)
-
     res.cookie('token', token, {
         httpOnly: true,
         sameSite: true,
@@ -84,14 +83,17 @@ export const forgot = async (req: Request, res: Response) => {
         throw Error('No account with that Email')
     }
 
-    const resetPasswordToken = authService.generateResetPasswordToken(user)
+    const resetPasswordToken = await authService.generateResetPasswordToken(
+        user,
+        getUserModel()
+    )
     const resetLink = config.BASE_URL + '/reset/' + resetPasswordToken
     await forgotPasswordService.sendForgotPasswordEmail({
         to: user.email,
         resetLink,
     })
 
-    res.json({ msg: 'eamil sent', resetPasswordToken })
+    res.json({ msg: 'email sent' })
 }
 
 export const reset = async (req: Request, res: Response) => {
@@ -103,12 +105,16 @@ export const reset = async (req: Request, res: Response) => {
 
     const User = getUserModel()
     const user = await User.where('reset_password_token', token).first()
-    if (new Date() < new Date(user?.reset_password_expires ?? -10000)) {
-        console.log(
-            new Date(),
-            new Date(user?.reset_password_expires ?? -10000)
-        )
+
+    console.log(user?.reset_password_expires)
+
+    if (!user?.reset_password_expires) {
         throw Error('Token Expired')
     }
-    res.json({ params: req.params, body: req.body })
+    if (new Date() >= new Date(user.reset_password_expires)) {
+        throw Error('Token Expired')
+    }
+
+    await authService.resetPassword(user, password, getUserModel())
+    res.json({ msg: 'password changed' })
 }

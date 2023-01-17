@@ -41,8 +41,10 @@ class AuthService {
         return user
     }
 
-    async generateResetPasswordToken(user: User) {
-        const User = getUserModel()
+    async generateResetPasswordToken(
+        user: User,
+        User: Knex.QueryBuilder<User>
+    ) {
         const resetPasswordToken = randomBytes(32).toString('hex')
         const resetPasswordExpires = Date.now() + 3600000
 
@@ -52,6 +54,15 @@ class AuthService {
         }).where('id', user.id)
 
         return resetPasswordToken
+    }
+
+    async resetPassword(
+        user: User,
+        newPassword: string,
+        User: Knex.QueryBuilder<User>
+    ) {
+        const hashedPassword = await passwordService.hash(newPassword)
+        return User.update('password', hashedPassword).where('id', user.id)
     }
 }
 
