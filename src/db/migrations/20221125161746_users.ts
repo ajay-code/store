@@ -1,15 +1,5 @@
 import { Knex } from 'knex'
 
-export interface User {
-    id: number
-    email: string
-    fullname: string
-    username: string
-    password: string
-    created_at: Date
-    updated_at: Date
-}
-
 export const up = (knex: Knex): Promise<void> => {
     return knex.schema.createTable('users', (table) => {
         table.increments('id')
