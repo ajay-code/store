@@ -8,4 +8,6 @@ r.route('/login').post(authController.login)
 
 r.route('/register').post(authController.register)
 
+r.route('/logout').post(authController.logout)
+
 export default authRouter

@@ -53,3 +53,8 @@ export const register = async (req: Request, res: Response) => {
 
     res.json({ name: userData.name, email: userData.email })
 }
+
+export const logout = async (req: Request, res: Response) => {
+    res.clearCookie('token')
+    res.send('logged out')
+}

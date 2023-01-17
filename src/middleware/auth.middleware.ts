@@ -31,19 +31,5 @@ export async function isAuthenticated(
 
     req.payload = payload as JWTPayload
 
-    // const user = await User.select(
-    //     'id',
-    //     'name',
-    //     'email',
-    //     'created_at',
-    //     'updated_at'
-    // )
-    //     .where({ id: req.payload.userId })
-    //     .first()
-    // if (!user) {
-    //     throw Error('user not found')
-    // }
-    // req.user = user
-
     next()
 }
