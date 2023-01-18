@@ -2,7 +2,7 @@ import path from 'node:path'
 import express from 'express'
 import helmet from 'helmet'
 import cookieParser from 'cookie-parser'
-import * as middleware from '#src/middleware/index.middleware.js'
+import * as middleware from '#src/middleware/index.js'
 import addRoutes from '#src/routes/index.routes.js'
 import { getDirname } from '#src/utils/index.js'
 

@@ -1,6 +1,5 @@
 import JWTService, { JWTPayload } from '#src/services/jwt.service.js'
 import { Request, Response } from 'express'
-// import User from '#src/models/user.model.js'
 
 declare global {
     namespace Express {

@@ -1,5 +1,4 @@
-import { isAuthenticated } from '#src/middleware/auth.middleware.js'
-import getUserModel from '#src/models/user.model.js'
+import { getUserModel } from '#src/models/index.js'
 import { Request, Response, Router } from 'express'
 
 let protectedRouter: Router

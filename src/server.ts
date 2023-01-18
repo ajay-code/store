@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import config from '#src/config/index.config.js'
+import config from '#src/config/index.js'
 import 'express-async-errors'
 import http from 'node:http'
 import app from './app.js'

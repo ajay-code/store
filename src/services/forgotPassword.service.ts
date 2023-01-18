@@ -1,4 +1,5 @@
 import emailService from './email.service.js'
+
 export class ForgotPassword {
     constructor() {}
 
@@ -18,4 +19,6 @@ export class ForgotPassword {
     }
 }
 
-export default new ForgotPassword()
+const forgotPasswordService = new ForgotPassword()
+
+export default forgotPasswordService

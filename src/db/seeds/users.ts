@@ -1,6 +1,7 @@
 import { Knex } from 'knex'
-import passwordService from '#src/services/password.service.js'
+import { PasswordService } from '#src/services/password.service.js'
 
+const passwordService = new PasswordService()
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }

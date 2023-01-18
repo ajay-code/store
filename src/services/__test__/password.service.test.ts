@@ -1,4 +1,6 @@
-import passwordService from '../password.service.js'
+import { PasswordService } from '../password.service.js'
+
+const passwordService = new PasswordService()
 
 describe('passwordService', () => {
     const password = 'secret'

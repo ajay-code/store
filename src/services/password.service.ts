@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt'
 export class PasswordService {
     private slatRounds: number
 
-    constructor(saltRounds: number) {
+    constructor(saltRounds: number = 10) {
         this.slatRounds = saltRounds
     }
 
@@ -15,5 +15,3 @@ export class PasswordService {
         return bcrypt.compare(password, hash)
     }
 }
-
-export default new PasswordService(10)

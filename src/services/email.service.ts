@@ -1,19 +1,16 @@
-import config from '#src/config/index.config.js'
+import config from '#src/config/index.js'
 import nodemailer, { Transporter } from 'nodemailer'
+import SMTPTransport from 'nodemailer/lib/smtp-transport/index.js'
 
 export class EmailService {
     private from = 'Store Admin <noreply@store.com>'
     private transport: Transporter
 
-    constructor() {
-        this.transport = nodemailer.createTransport({
-            host: config.EMAIL.host,
-            port: config.EMAIL.port,
-            auth: {
-                user: config.EMAIL.user,
-                pass: config.EMAIL.password,
-            },
-        })
+    constructor(mailConfig: SMTPTransport.Options, from?: string) {
+        this.transport = nodemailer.createTransport(mailConfig)
+        if (from) {
+            this.from = from
+        }
     }
 
     sendEmail(opt: {
@@ -29,4 +26,13 @@ export class EmailService {
     }
 }
 
-export default new EmailService()
+const mailConfig = {
+    host: config.EMAIL.host,
+    port: config.EMAIL.port,
+    auth: {
+        user: config.EMAIL.user,
+        pass: config.EMAIL.password,
+    },
+}
+
+export default new EmailService(mailConfig)

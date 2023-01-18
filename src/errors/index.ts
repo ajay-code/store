@@ -1,2 +1,3 @@
-export { BadRequestError } from './BadRequestError.js'
-export { NotFoundError } from './NotFoundError.js'
+export * from './BadRequestError.js'
+export * from './NotFoundError.js'
+export * from './UnauthorizedError.js'

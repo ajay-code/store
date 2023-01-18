@@ -1,5 +1,6 @@
+import { storeController } from '#src/controllers/index.js'
 import { Router } from 'express'
-import * as storeController from '#src/controllers/store/store.controller.js'
+
 let storeRouter: Router
 let r = (storeRouter = Router())
 

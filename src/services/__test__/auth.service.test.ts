@@ -1,8 +1,10 @@
-import authService from '../auth.service.js'
+import { AuthService } from '../auth.service.js'
 import * as zod from 'zod'
 import { registerSchema } from '#src/validators/auth.validators.js'
 import db from '#src/lib/knex/db.js'
-import getUserModel from '#src/models/user.model.js'
+import { getUserModel } from '#src/models/index.js'
+
+const authService = new AuthService()
 
 beforeAll(async () => {
     await db.raw('BEGIN')
@@ -22,7 +24,7 @@ describe('authService', () => {
 
     it('should created user successfully', async () => {
         const UserModel = getUserModel()
-        const result = await authService.registerUser(validUser, UserModel)
+        const result = await authService.register(validUser, UserModel)
         expect(result[0]).toBeGreaterThan(0)
     })
 
@@ -32,7 +34,7 @@ describe('authService', () => {
             email: validUser.email,
             password: validUser.password,
         }
-        const result = await authService.loginUser(credentials, UserModel)
+        const result = await authService.login(credentials, UserModel)
 
         expect(result).toEqual(
             expect.objectContaining({
@@ -49,9 +51,9 @@ describe('authService', () => {
             password: 'password',
         }
 
-        await expect(
-            authService.loginUser(credentials, UserModel)
-        ).rejects.toThrow('user not found')
+        await expect(authService.login(credentials, UserModel)).rejects.toThrow(
+            'user not found'
+        )
     })
 
     it('should reject login with error user not found', async () => {
@@ -61,8 +63,8 @@ describe('authService', () => {
             password: 'invalid password',
         }
 
-        await expect(
-            authService.loginUser(credentials, UserModel)
-        ).rejects.toThrow('password not valid')
+        await expect(authService.login(credentials, UserModel)).rejects.toThrow(
+            'password not valid'
+        )
     })
 })

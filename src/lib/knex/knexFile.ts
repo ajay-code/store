@@ -1,4 +1,4 @@
-import config from '#src/config/index.config.js'
+import config from '#src/config/index.js'
 import { Knex } from 'knex'
 
 const client: string = config.DB.dbClient

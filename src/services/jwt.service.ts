@@ -1,4 +1,4 @@
-import config from '#src/config/index.config.js'
+import config from '#src/config/index.js'
 import jwt from 'jsonwebtoken'
 
 export type JWTPayload = {
@@ -6,9 +6,9 @@ export type JWTPayload = {
     email: string
 }
 
-class JWTService {
+export class JWTService {
     private secretKey: string
-    private expiresIn = '28d'
+    private expiresIn = '30d'
 
     constructor(secret: string) {
         this.secretKey = secret
@@ -35,4 +35,6 @@ class JWTService {
     }
 }
 
-export default new JWTService(config.APP_KEY)
+const jwtService = new JWTService(config.APP_KEY)
+
+export default jwtService

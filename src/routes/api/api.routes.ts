@@ -1,5 +1,5 @@
-import { isAuthenticated } from '#src/middleware/auth.middleware.js'
-import { Request, Response, Router } from 'express'
+import { isAuthenticated } from '#src/middleware/index.js'
+import { Router } from 'express'
 import authRouter from './auth.routes.js'
 import protectedRouter from './protected.routes.js'
 import storeRouter from './store.routes.js'

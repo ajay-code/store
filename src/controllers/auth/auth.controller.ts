@@ -1,13 +1,15 @@
 import { z } from 'zod'
 import { Request, Response } from 'express'
-import { randomBytes } from 'node:crypto'
-import getUserModel, { User } from '#src/models/user.model.js'
-import authService from '#src/services/auth.service.js'
+import { User, getUserModel } from '#src/models/index.js'
+import { AuthService, UserService } from '#src/services/index.js'
 import { registerSchema, loginSchema } from '#src/validators/auth.validators.js'
 import jwtService, { JWTPayload } from '#src/services/jwt.service.js'
 import { getUserInfo } from '#src/utils/index.js'
 import forgotPasswordService from '#src/services/forgotPassword.service.js'
-import config from '#src/config/index.config.js'
+import config from '#src/config/index.js'
+
+const authService = new AuthService()
+const userService = new UserService()
 
 function makeJwtTokenForUser(user: User) {
     const jwtPayload: JWTPayload = {
@@ -19,17 +21,11 @@ function makeJwtTokenForUser(user: User) {
 
 export const login = async (req: Request, res: Response) => {
     // validation
-    let credentials: z.infer<typeof loginSchema>
-    try {
-        credentials = loginSchema.parse(req.body)
-    } catch (error: any) {
-        res.status(401).json({ error: error.message })
-        return
-    }
+    const credentials: z.infer<typeof loginSchema> = loginSchema.parse(req.body)
 
     // login and token generation
     const User = getUserModel()
-    const user = await authService.loginUser(credentials, User)
+    const user = await authService.login(credentials, User)
     const token = makeJwtTokenForUser(user)
     res.cookie('token', token, {
         httpOnly: true,
@@ -43,18 +39,13 @@ export const login = async (req: Request, res: Response) => {
 
 export const register = async (req: Request, res: Response) => {
     // validate data
-    let userData: z.infer<typeof registerSchema>
-    try {
-        userData = registerSchema.parse(req.body)
-    } catch (error: any) {
-        console.log(error.message)
-        res.json({ errors: error.message })
-        return
-    }
+    const userData: z.infer<typeof registerSchema> = registerSchema.parse(
+        req.body
+    )
 
     // save user in DB
     let User = getUserModel()
-    await authService.registerUser(userData, User)
+    await authService.register(userData, User)
 
     // login the user
     User = getUserModel()
@@ -75,19 +66,22 @@ export const logout = async (req: Request, res: Response) => {
     res.send('logged out')
 }
 
+const forgotSchema = z.object({
+    email: z.string().email(),
+})
 export const forgot = async (req: Request, res: Response) => {
-    const { email } = req.body
-    let User = getUserModel()
-    const user = await User.where('email', email).first()
+    const { email }: z.infer<typeof forgotSchema> = forgotSchema.parse(req.body)
+
+    const user = await userService.getUserByEmail(email, getUserModel())
     if (!user) {
         throw Error('No account with that Email')
     }
 
-    const resetPasswordToken = await authService.generateResetPasswordToken(
+    const resetPasswordToken = await userService.generateResetPasswordToken(
         user,
         getUserModel()
     )
-    const resetLink = config.BASE_URL + '/reset/' + resetPasswordToken
+    const resetLink = config.BASE_URL + '/account/reset/' + resetPasswordToken
     await forgotPasswordService.sendForgotPasswordEmail({
         to: user.email,
         resetLink,
@@ -103,10 +97,10 @@ export const reset = async (req: Request, res: Response) => {
         throw Error('Password do not match')
     }
 
-    const User = getUserModel()
-    const user = await User.where('reset_password_token', token).first()
-
-    console.log(user?.reset_password_expires)
+    const user = await userService.getUserByResetPasswordToken(
+        token,
+        getUserModel()
+    )
 
     if (!user?.reset_password_expires) {
         throw Error('Token Expired')
@@ -115,6 +109,6 @@ export const reset = async (req: Request, res: Response) => {
         throw Error('Token Expired')
     }
 
-    await authService.resetPassword(user, password, getUserModel())
+    await userService.resetPassword(user, password, getUserModel())
     res.json({ msg: 'password changed' })
 }
