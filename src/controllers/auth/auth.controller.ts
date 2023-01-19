@@ -82,11 +82,10 @@ export const forgot = async (req: Request, res: Response) => {
         getUserModel()
     )
     const resetLink = config.BASE_URL + '/account/reset/' + resetPasswordToken
-    await forgotPasswordService.sendForgotPasswordEmail({
+    const result = await forgotPasswordService.sendForgotPasswordEmail({
         to: user.email,
         resetLink,
     })
-
     res.json({ msg: 'email sent' })
 }
 

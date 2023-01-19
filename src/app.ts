@@ -20,7 +20,9 @@ app.use(express.urlencoded({ extended: false })) // parse form data
  * add security middleware
  */
 app.use(helmet())
-// app.disable('x-powered-by')
+if (process.env.NODE_ENV === 'production') {
+    app.disable('x-powered-by')
+}
 
 /**
  * Serve static files form public dir
