@@ -5,6 +5,7 @@ export async function up(knex: Knex): Promise<void> {
         table.increments('id')
         table.string('name').notNullable()
         table.string('slug').nullable()
+        table.text('description').nullable()
         table.string('location_type', 10).defaultTo('Point')
         table.point('location_coordinates').notNullable()
         table.string('location_address').notNullable()

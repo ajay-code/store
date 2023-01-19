@@ -1,4 +1,5 @@
 import { storeController } from '#src/controllers/index.js'
+import { isAuthenticated } from '#src/middleware/auth.middleware.js'
 import { Router } from 'express'
 
 let storeRouter: Router
@@ -10,6 +11,11 @@ r.get('/stores/page/:page', storeController.getStores)
 
 r.get('/store/:slug', storeController.getStoreBySlug)
 
-r.post('/add', storeController.createStore)
-r.post('/add/:id', storeController.updateStore)
+r.post(
+    '/add',
+    isAuthenticated,
+    storeController.uploadPhoto.single('photo'),
+    storeController.createStore
+)
+r.post('/add/:id', isAuthenticated, storeController.updateStore)
 export default storeRouter

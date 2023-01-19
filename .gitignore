@@ -3,3 +3,4 @@ dist
 .keys
 .env
 coverage
+public/uploads
