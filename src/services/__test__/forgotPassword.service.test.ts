@@ -5,7 +5,7 @@ const mailOptions = {
     resetLink: 'http://google.com',
 }
 describe('forgotPasswordService', () => {
-    it('it should send email with mailOptions Successfully', async () => {
+    it('it should send rest password email with mailOptions Successfully', async () => {
         const result = await forgotPasswordService.sendForgotPasswordEmail(
             mailOptions
         )

@@ -1,5 +1,5 @@
 import { AuthService } from '../auth.service.js'
-import * as zod from 'zod'
+import * as z from 'zod'
 import { registerSchema } from '#src/validators/auth.validators.js'
 import db from '#src/lib/knex/db.js'
 import { getUserModel } from '#src/models/index.js'
@@ -15,7 +15,7 @@ afterAll(async () => {
 })
 
 describe('authService', () => {
-    const validUser: zod.infer<typeof registerSchema> = {
+    const validUser: z.infer<typeof registerSchema> = {
         name: 'user',
         email: 'user@email.com',
         password: 'secret',
