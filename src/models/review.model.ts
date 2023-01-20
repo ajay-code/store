@@ -8,7 +8,3 @@ export interface Review {
     rating: number
     created_at: Date
 }
-
-export default function getReviewModel() {
-    return db.table<Review>('reviews')
-}

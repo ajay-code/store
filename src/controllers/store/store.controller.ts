@@ -1,5 +1,5 @@
 import db from '#src/lib/knex/db.js'
-import getStoreModel from '#src/models/store.model.js'
+import { Store } from '#src/models/store.model.js'
 import { addStoreSchema } from '#src/validators/store.validators.js'
 import { Request, Response } from 'express'
 import multer from 'multer'
@@ -79,7 +79,7 @@ export const createStore = async (req: Request, res: Response) => {
         photo,
     }
 
-    const Store = getStoreModel()
+    const Store = db.table<Store>('stores')
     await Store.insert({
         ...store,
         location_coordinates: db.raw(

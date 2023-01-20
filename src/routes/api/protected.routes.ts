@@ -1,11 +1,12 @@
-import { getUserModel } from '#src/models/index.js'
+import db from '#src/lib/knex/db.js'
+import { User } from '#src/models/index.js'
 import { Request, Response, Router } from 'express'
 
 let protectedRouter: Router
 let r = (protectedRouter = Router())
 
 r.get('/me', async (req: Request, res: Response) => {
-    const User = getUserModel()
+    const User = db.table<User>('users')
     const user = await User.select(
         'id',
         'email',

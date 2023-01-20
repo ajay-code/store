@@ -1,12 +1,13 @@
 import { z } from 'zod'
 import { Request, Response } from 'express'
-import { User, getUserModel } from '#src/models/index.js'
+import { User } from '#src/models/index.js'
 import { AuthService, UserService } from '#src/services/index.js'
 import { registerSchema, loginSchema } from '#src/validators/auth.validators.js'
 import jwtService, { JWTPayload } from '#src/services/jwt.service.js'
 import { getUserInfo } from '#src/utils/index.js'
 import forgotPasswordService from '#src/services/forgotPassword.service.js'
 import config from '#src/config/index.js'
+import db from '#src/lib/knex/db.js'
 
 const authService = new AuthService()
 const userService = new UserService()
@@ -24,7 +25,7 @@ export const login = async (req: Request, res: Response) => {
     const credentials: z.infer<typeof loginSchema> = loginSchema.parse(req.body)
 
     // login and token generation
-    const User = getUserModel()
+    const User = db.table<User>('users')
     const user = await authService.login(credentials, User)
     const token = makeJwtTokenForUser(user)
     res.cookie('token', token, {
@@ -44,12 +45,13 @@ export const register = async (req: Request, res: Response) => {
     )
 
     // save user in DB
-    let User = getUserModel()
-    await authService.register(userData, User)
+    await authService.register(userData, db.table<User>('users'))
 
     // login the user
-    User = getUserModel()
-    const user = (await User.where('email', userData.email).first()) as User
+    const user = (await db
+        .table<User>('users')
+        .where('email', userData.email)
+        .first()) as User
     const token = makeJwtTokenForUser(user)
     res.cookie('token', token, {
         httpOnly: true,
@@ -72,14 +74,17 @@ const forgotSchema = z.object({
 export const forgot = async (req: Request, res: Response) => {
     const { email }: z.infer<typeof forgotSchema> = forgotSchema.parse(req.body)
 
-    const user = await userService.getUserByEmail(email, getUserModel())
+    const user = await userService.getUserByEmail(
+        email,
+        db.table<User>('users')
+    )
     if (!user) {
         throw Error('No account with that Email')
     }
 
     const resetPasswordToken = await userService.generateResetPasswordToken(
         user,
-        getUserModel()
+        db.table<User>('users')
     )
     const resetLink = config.BASE_URL + '/account/reset/' + resetPasswordToken
     const result = await forgotPasswordService.sendForgotPasswordEmail({
@@ -98,7 +103,7 @@ export const reset = async (req: Request, res: Response) => {
 
     const user = await userService.getUserByResetPasswordToken(
         token,
-        getUserModel()
+        db.table<User>('users')
     )
 
     if (!user?.reset_password_expires) {
@@ -108,6 +113,6 @@ export const reset = async (req: Request, res: Response) => {
         throw Error('Token Expired')
     }
 
-    await userService.resetPassword(user, password, getUserModel())
+    await userService.resetPassword(user, password, db.table<User>('users'))
     res.json({ msg: 'password changed' })
 }

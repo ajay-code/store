@@ -3,7 +3,7 @@ import * as z from 'zod'
 import { registerSchema } from '#src/validators/auth.validators.js'
 import { UserService } from '../user.service.js'
 import { AuthService } from '../auth.service.js'
-import { getUserModel } from '#src/models/user.model.js'
+import { User } from '#src/models/user.model.js'
 
 const userService = new UserService()
 const authService = new AuthService()
@@ -18,14 +18,14 @@ let resetPasswordToken: string
 
 beforeAll(async () => {
     await db.raw('BEGIN')
-    await authService.register(validUser, getUserModel())
+    await authService.register(validUser, db.table<User>('users'))
     const user = await userService.getUserByEmail(
         validUser.email,
-        getUserModel()
+        db.table<User>('users')
     )
     resetPasswordToken = await userService.generateResetPasswordToken(
         user,
-        getUserModel()
+        db.table<User>('users')
     )
 })
 
@@ -38,7 +38,7 @@ describe('userService', () => {
     it('it should get user by email successfully', async () => {
         const user = await userService.getUserByEmail(
             validUser.email,
-            getUserModel()
+            db.table<User>('users')
         )
         expect(user).toEqual(expect.objectContaining(user))
     })
@@ -46,7 +46,7 @@ describe('userService', () => {
     it('it should get user by reset_password_token', async () => {
         const user = await userService.getUserByResetPasswordToken(
             resetPasswordToken,
-            getUserModel()
+            db.table<User>('users')
         )
         expect(user).toEqual(expect.objectContaining(user))
     })
@@ -54,11 +54,11 @@ describe('userService', () => {
     it('it should generate user password_reset_token', async () => {
         const user = await userService.getUserByEmail(
             validUser.email,
-            getUserModel()
+            db.table<User>('users')
         )
         resetPasswordToken = await userService.generateResetPasswordToken(
             user,
-            getUserModel()
+            db.table<User>('users')
         )
 
         expect(typeof resetPasswordToken).toBe('string')

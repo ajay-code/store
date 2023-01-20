@@ -12,7 +12,3 @@ export interface Store {
     author: number
     created_at: Date
 }
-
-export default function getStoreModel() {
-    return db.table<Store>('stores')
-}

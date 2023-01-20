@@ -2,7 +2,7 @@ import { AuthService } from '../auth.service.js'
 import * as z from 'zod'
 import { registerSchema } from '#src/validators/auth.validators.js'
 import db from '#src/lib/knex/db.js'
-import { getUserModel } from '#src/models/index.js'
+import { User } from '#src/models/index.js'
 
 const authService = new AuthService()
 
@@ -23,13 +23,13 @@ describe('authService', () => {
     }
 
     it('should created user successfully', async () => {
-        const UserModel = getUserModel()
+        const UserModel = db.table<User>('users')
         const result = await authService.register(validUser, UserModel)
         expect(result[0]).toBeGreaterThan(0)
     })
 
     it('should login user successfully', async () => {
-        const UserModel = getUserModel()
+        const UserModel = db.table<User>('users')
         const credentials = {
             email: validUser.email,
             password: validUser.password,
@@ -45,7 +45,7 @@ describe('authService', () => {
     })
 
     it('should reject login with error user not found', async () => {
-        const UserModel = getUserModel()
+        const UserModel = db.table<User>('users')
         const credentials = {
             email: 'invalid@email.com',
             password: 'password',
@@ -57,7 +57,7 @@ describe('authService', () => {
     })
 
     it('should reject login with error user not found', async () => {
-        const UserModel = getUserModel()
+        const UserModel = db.table<User>('users')
         const credentials = {
             email: validUser.email,
             password: 'invalid password',

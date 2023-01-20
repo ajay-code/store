@@ -16,7 +16,3 @@ export interface UserInfo
         User,
         'password' | 'reset_password_token' | 'reset_password_expires'
     > {}
-
-export function getUserModel() {
-    return db<User>('users')
-}
