@@ -1,3 +1,6 @@
+import { UnauthorizedError } from '#src/errors/UnauthorizedError.js'
+import db from '#src/lib/knex/db.js'
+import { Store } from '#src/models/index.js'
 import JWTService, { JWTPayload } from '#src/services/jwt.service.js'
 import { Request, Response } from 'express'
 
@@ -16,19 +19,34 @@ export async function isAuthenticated(
     next: Function
 ) {
     const token = req.cookies.token
-
     if (!token) {
         res.status(401).json({ error: 'no token provided' })
         return
     }
 
     const payload = JWTService.verifyToken(token)
-
     if (!payload) {
-        res.status(401).json({ error: 'invalid token' })
+        throw new UnauthorizedError('invalid token')
     }
-
     req.payload = payload as JWTPayload
 
+    next()
+}
+
+export async function isAuthorOfStore(
+    req: Request,
+    res: Response,
+    next: Function
+) {
+    const author = req.payload.userId
+    const { id: store_id } = req.params
+    const store = await db
+        .table<Store>('stores')
+        .where('id', parseInt(store_id))
+        .andWhere('author', author)
+        .first()
+    if (!store) {
+        throw new UnauthorizedError()
+    }
     next()
 }

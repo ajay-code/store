@@ -109,7 +109,7 @@ export const updateStore = async (req: Request, res: Response) => {
     const { id } = req.params
     const storeId = parseInt(id)
     const data = updateStoreSchema.parse(req.body)
-    const store: Optional<StoreData, 'photo'> = {
+    const storeData: Optional<StoreData, 'photo'> = {
         name: data.name,
         description: data.description,
         location_address: data.location_address,
@@ -119,10 +119,14 @@ export const updateStore = async (req: Request, res: Response) => {
     }
     if (req.file) {
         const photo = await savePhoto(req.file)
-        store.photo = photo
+        storeData.photo = photo
     }
 
-    await storeService.updateStore(storeId, data, db.table<Store>('stores'))
+    await storeService.updateStore(
+        storeId,
+        storeData,
+        db.table<Store>('stores')
+    )
     await storeService.removeTagsFromStore(
         storeId,
         db.table<StoresTags>('stores_tags')
@@ -133,5 +137,5 @@ export const updateStore = async (req: Request, res: Response) => {
         db.table<StoresTags>('stores_tags')
     )
 
-    res.send('update store with id: ' + id)
+    res.send('updated store with id: ' + id)
 }

@@ -25,7 +25,7 @@ export class StoreService {
             location_coordinates: db.raw(
                 `POINT (${store.location_coordinates[0]}, ${store.location_coordinates[1]})`
             ),
-        }).where('store_id', store_id)
+        }).where('id', store_id)
     }
 
     async addTagsToStore(

@@ -1,4 +1,4 @@
-SELECT stores.name, tags.* as tag_* 
+SELECT stores.name, tags.tag
 FROM stores
 LEFT JOIN stores_tags
     ON stores.id = stores_tags.store_id
