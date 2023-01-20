@@ -1,10 +1,13 @@
 import db from '#src/lib/knex/db.js'
-import { Store } from '#src/models/store.model.js'
-import { addStoreSchema } from '#src/validators/store.validators.js'
+import { Store, StoresTags } from '#src/models/index.js'
+import { StoreService } from '#src/services/index.js'
+import { addStoreSchema, updateStoreSchema } from '#src/validators/index.js'
 import { Request, Response } from 'express'
 import multer from 'multer'
 import sharp from 'sharp'
 import { z } from 'zod'
+
+const storeService = new StoreService()
 
 export const uploadPhoto = multer({
     storage: multer.memoryStorage(),
@@ -61,36 +64,74 @@ function slugify(name: string) {
     slug = slug.replace(/\s+/g, '-')
     return slug
 }
+
+type StoreData = {
+    name: string
+    description: string
+    location_address: string
+    location_coordinates: [number, number]
+    slug: string
+    author: number
+    photo: string
+}
+
 export const createStore = async (req: Request, res: Response) => {
     if (!req.file) {
         throw new Error('No file uploaded')
     }
 
-    const storeData: z.infer<typeof addStoreSchema> = addStoreSchema.parse(
-        req.body
-    )
+    const data = addStoreSchema.parse(req.body)
 
     const photo = await savePhoto(req.file)
-
-    const store = {
-        ...storeData,
-        slug: slugify(storeData.name),
+    const storeData: StoreData = {
+        name: data.name,
+        description: data.description,
+        location_address: data.location_address,
+        location_coordinates: data.location_coordinates,
+        slug: slugify(data.name),
         author: req.payload.userId,
         photo,
     }
 
-    const Store = db.table<Store>('stores')
-    await Store.insert({
-        ...store,
-        location_coordinates: db.raw(
-            `POINT (${store.location_coordinates[0]}, ${store.location_coordinates[1]})`
-        ),
-    })
-    res.send(store)
+    const storeId = await storeService.addStore(
+        storeData,
+        db.table<Store>('stores')
+    )
+    await storeService.addTagsToStore(
+        storeId,
+        data.tags,
+        db.table<StoresTags>('stores_tags')
+    )
+    res.send(storeData)
 }
 
-export const updateStore = (req: Request, res: Response) => {
+export const updateStore = async (req: Request, res: Response) => {
     const { id } = req.params
+    const storeId = parseInt(id)
+    const data = updateStoreSchema.parse(req.body)
+    const store: Optional<StoreData, 'photo'> = {
+        name: data.name,
+        description: data.description,
+        location_address: data.location_address,
+        location_coordinates: data.location_coordinates,
+        slug: slugify(data.name),
+        author: req.payload.userId,
+    }
+    if (req.file) {
+        const photo = await savePhoto(req.file)
+        store.photo = photo
+    }
+
+    await storeService.updateStore(storeId, data, db.table<Store>('stores'))
+    await storeService.removeTagsFromStore(
+        storeId,
+        db.table<StoresTags>('stores_tags')
+    )
+    await storeService.addTagsToStore(
+        storeId,
+        data.tags,
+        db.table<StoresTags>('stores_tags')
+    )
 
     res.send('update store with id: ' + id)
 }
