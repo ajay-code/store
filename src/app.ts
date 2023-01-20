@@ -4,9 +4,9 @@ import helmet from 'helmet'
 import cookieParser from 'cookie-parser'
 import * as middleware from '#src/middleware/index.js'
 import addRoutes from '#src/routes/index.routes.js'
-import { getDirname } from '#src/utils/index.js'
+import { fsUtils } from '#src/utils/index.js'
 
-const __dirname = getDirname(import.meta.url)
+const __dirname = fsUtils.getDirname(import.meta.url)
 const app = express()
 
 /**

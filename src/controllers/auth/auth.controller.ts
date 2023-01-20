@@ -1,24 +1,15 @@
-import { z } from 'zod'
-import { Request, Response } from 'express'
-import { User } from '#src/models/index.js'
-import { AuthService, UserService } from '#src/services/index.js'
-import { registerSchema, loginSchema } from '#src/validators/auth.validators.js'
-import jwtService, { JWTPayload } from '#src/services/jwt.service.js'
-import { getUserInfo } from '#src/utils/index.js'
-import forgotPasswordService from '#src/services/forgotPassword.service.js'
 import config from '#src/config/index.js'
 import db from '#src/lib/knex/db.js'
+import { User } from '#src/models/index.js'
+import forgotPasswordService from '#src/services/forgotPassword.service.js'
+import { AuthService, UserService } from '#src/services/index.js'
+import { jwtUtils, userUtils } from '#src/utils/index.js'
+import { loginSchema } from '#src/validators/auth.validators.js'
+import { Request, Response } from 'express'
+import { z } from 'zod'
 
 const authService = new AuthService()
 const userService = new UserService()
-
-function makeJwtTokenForUser(user: User) {
-    const jwtPayload: JWTPayload = {
-        email: user.email,
-        userId: user.id,
-    }
-    return jwtService.generateToken(jwtPayload)
-}
 
 export const login = async (req: Request, res: Response) => {
     // validation
@@ -27,7 +18,7 @@ export const login = async (req: Request, res: Response) => {
     // login and token generation
     const User = db.table<User>('users')
     const user = await authService.login(credentials, User)
-    const token = makeJwtTokenForUser(user)
+    const token = jwtUtils.makeJwtTokenForUser(user)
     res.cookie('token', token, {
         httpOnly: true,
         sameSite: true,
@@ -35,32 +26,7 @@ export const login = async (req: Request, res: Response) => {
         path: '/',
     })
 
-    res.json(getUserInfo(user))
-}
-
-export const register = async (req: Request, res: Response) => {
-    // validate data
-    const userData: z.infer<typeof registerSchema> = registerSchema.parse(
-        req.body
-    )
-
-    // save user in DB
-    await authService.register(userData, db.table<User>('users'))
-
-    // login the user
-    const user = (await db
-        .table<User>('users')
-        .where('email', userData.email)
-        .first()) as User
-    const token = makeJwtTokenForUser(user)
-    res.cookie('token', token, {
-        httpOnly: true,
-        sameSite: true,
-        maxAge: 3600 * 24 * 30,
-        path: '/',
-    })
-
-    res.json(getUserInfo(user))
+    res.json(userUtils.getUserInfo(user))
 }
 
 export const logout = async (req: Request, res: Response) => {
@@ -71,6 +37,7 @@ export const logout = async (req: Request, res: Response) => {
 const forgotSchema = z.object({
     email: z.string().email(),
 })
+
 export const forgot = async (req: Request, res: Response) => {
     const { email }: z.infer<typeof forgotSchema> = forgotSchema.parse(req.body)
 
@@ -87,7 +54,7 @@ export const forgot = async (req: Request, res: Response) => {
         db.table<User>('users')
     )
     const resetLink = config.BASE_URL + '/account/reset/' + resetPasswordToken
-    const result = await forgotPasswordService.sendForgotPasswordEmail({
+    await forgotPasswordService.sendForgotPasswordEmail({
         to: user.email,
         resetLink,
     })
