@@ -1,4 +1,3 @@
-import config from '#src/config/index.js'
 import { Request, Response } from 'express'
 import * as z from 'zod'
 

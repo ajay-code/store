@@ -1,5 +1,3 @@
-import db from '#src/lib/knex/db.js'
-
 export interface User {
     id: number
     email: string

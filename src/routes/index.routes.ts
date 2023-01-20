@@ -10,8 +10,6 @@ export const addRoutes = (app: Express) => {
         res.render('index', { title: 'Home Page' })
     })
 
-    // add auth routes
-
     // add api/v1 routes
     app.use('/api', apiRouter)
 }

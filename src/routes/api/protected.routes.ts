@@ -6,16 +6,12 @@ let protectedRouter: Router
 let r = (protectedRouter = Router())
 
 r.get('/me', async (req: Request, res: Response) => {
-    const User = db.table<User>('users')
-    const user = await User.select(
-        'id',
-        'email',
-        'name',
-        'created_at',
-        'updated_at'
-    )
+    const user = await db
+        .table<User>('users')
+        .select('id', 'email', 'name', 'created_at', 'updated_at')
         .where('id', req.payload.userId)
         .first()
+
     res.json(user)
 })
 

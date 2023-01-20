@@ -5,9 +5,7 @@ let authRouter: Router
 const r = (authRouter = Router())
 
 r.route('/login').post(authController.login)
-
 r.route('/register').post(authController.register)
-
 r.route('/logout').post(authController.logout)
 
 r.route('/account/forgot').post(authController.forgot)

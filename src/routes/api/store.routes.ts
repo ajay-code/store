@@ -8,7 +8,6 @@ let r = (storeRouter = Router())
 r.get('/', storeController.getStores)
 r.get('/stores', storeController.getStores)
 r.get('/stores/page/:page', storeController.getStores)
-
 r.get('/store/:slug', storeController.getStoreBySlug)
 
 r.post(
