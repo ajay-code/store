@@ -1,5 +1,11 @@
+import { Store } from '#src/models/store.model.js'
+import { Tag } from '#src/models/tag.model.js'
+
+interface StoreWithTags extends Store {
+    tags: Tag[]
+}
 export function hydrateStoresWithTags(input: any) {
-    const hydrated: any[] = [],
+    const hydrated: StoreWithTags[] = [],
         lookup: any = {}
 
     for (let store of input) {

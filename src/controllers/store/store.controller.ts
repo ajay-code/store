@@ -1,6 +1,6 @@
 import db from '#src/lib/knex/db.js'
 import { Store, StoresTags } from '#src/models/index.js'
-import { StoreService } from '#src/services/index.js'
+import { storeService } from '#src/services/index.js'
 import { hydration } from '#src/utils/index.js'
 import { addStoreSchema, updateStoreSchema } from '#src/validators/index.js'
 import { Request, Response } from 'express'
@@ -8,8 +8,6 @@ import { savePhoto } from './savePhoto.js'
 import { slugify } from './slugify.js'
 
 export { uploadPhoto } from './uploadPhoto.js'
-
-const storeService = new StoreService()
 
 type StoreData = {
     name: string
@@ -101,7 +99,6 @@ export const updateStore = async (req: Request, res: Response) => {
 }
 
 // query stores in different ways
-
 export const getStores = async (req: Request, res: Response) => {
     const { page } = req.params
     const stores = await storeService.getStores({ page: parseInt(page) ?? 1 })
@@ -118,8 +115,7 @@ export const getStoreBySlug = async (req: Request, res: Response) => {
 
 export const getStoresByTag = async (req: Request, res: Response) => {
     const { tag } = req.params
-
-    const stores = await storeService.getStoreByTag(tag)
-
-    res.json({ data: hydration.hydrateStoresWithTags(stores) })
+    const result = await storeService.getStoreByTag(tag)
+    const stores = hydration.hydrateStoresWithTags(result)
+    res.json({ data: stores })
 }
