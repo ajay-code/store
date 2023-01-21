@@ -4,6 +4,7 @@ import { StoresTags } from '#src/models/stores_tags.model.js'
 import { Knex } from 'knex'
 
 export class StoreService {
+    private limit = 10
     async addStore(store: any, Store: Knex.QueryBuilder<Store>) {
         const [store_id] = await Store.insert({
             ...store,
@@ -45,5 +46,45 @@ export class StoreService {
         StoresTags: Knex.QueryBuilder<StoresTags>
     ) {
         return StoresTags.where('store_id', store_id).delete()
+    }
+
+    async getStores(opt: { page: number }) {
+        const offset = this.limit * (opt.page - 1)
+        return db
+            .table<Store>('stores')
+            .select('*')
+            .offset(offset)
+            .limit(this.limit)
+    }
+
+    async getStoreBySlug(slug: string) {
+        return db.table<Store>('stores').select('*').where('slug', slug).first()
+    }
+
+    async countBySlug(slug: string, exceptStoreId?: number) {
+        return db
+            .table<Store>('stores')
+            .count('slug', { as: 'slug' })
+            .where('slug', slug)
+            .modify((queryBuilder) => {
+                if (exceptStoreId) {
+                    queryBuilder.andWhereNot('id', exceptStoreId)
+                }
+            })
+    }
+
+    async getStoreByTag(tag: string) {
+        const query = db
+            .table<Store>('stores')
+            .select('stores.*', 'tags.tag as tag', 'tags.id as tag_id')
+            .innerJoin('stores_tags', 'stores_tags.store_id', '=', 'stores.id')
+            .innerJoin('tags', 'tags.id', '=', 'stores_tags.tag_id')
+            .modify((queryBuilder) => {
+                if (tag) {
+                    queryBuilder.where('tags.tag', tag)
+                }
+            })
+
+        return query
     }
 }
