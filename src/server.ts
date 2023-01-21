@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import config from '#src/config/index.js'
+
 import 'express-async-errors'
 import http from 'node:http'
 import app from './app.js'
@@ -7,7 +8,6 @@ import db from './lib/knex/db.js'
 
 const port = config.APP_PORT
 const baseUrl = config.BASE_URL
-
 const server = http.createServer(app)
 
 server.listen(port, () => {

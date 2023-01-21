@@ -12,7 +12,7 @@ if (!APP_KEY) {
     throw Error('Please define APP_KEY in [.env]')
 }
 
-const config = {
+export const config = {
     NODE_ENV,
     BASE_URL,
     APP_PORT,
