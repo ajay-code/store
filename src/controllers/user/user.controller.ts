@@ -1,10 +1,11 @@
 import db from '#src/lib/knex/db.js'
 import { User } from '#src/models/index.js'
 import { AuthService } from '#src/services/auth.service.js'
-import { jwtUtils, userUtils } from '#src/utils/index.js'
+import { userUtils } from '#src/utils/index.js'
 import { registerSchema } from '#src/validators/index.js'
 import { Request, Response } from 'express'
 import { z } from 'zod'
+import { makeJwtTokenForUser } from '../helpers/index.js'
 
 const authService = new AuthService()
 
@@ -22,7 +23,7 @@ export const register = async (req: Request, res: Response) => {
         .table<User>('users')
         .where('email', userData.email)
         .first()) as User
-    const token = jwtUtils.makeJwtTokenForUser(user)
+    const token = makeJwtTokenForUser(user)
     res.cookie('token', token, {
         httpOnly: true,
         sameSite: true,

@@ -3,7 +3,8 @@ import db from '#src/lib/knex/db.js'
 import { User } from '#src/models/index.js'
 import forgotPasswordService from '#src/services/forgotPassword.service.js'
 import { AuthService, UserService } from '#src/services/index.js'
-import { jwtUtils, userUtils } from '#src/utils/index.js'
+import { userUtils } from '#src/utils/index.js'
+import { makeJwtTokenForUser } from '../helpers/index.js'
 import { loginSchema } from '#src/validators/auth.validators.js'
 import { Request, Response } from 'express'
 import { z } from 'zod'
@@ -18,7 +19,7 @@ export const login = async (req: Request, res: Response) => {
     // login and token generation
     const User = db.table<User>('users')
     const user = await authService.login(credentials, User)
-    const token = jwtUtils.makeJwtTokenForUser(user)
+    const token = makeJwtTokenForUser(user)
     res.cookie('token', token, {
         httpOnly: true,
         sameSite: true,
