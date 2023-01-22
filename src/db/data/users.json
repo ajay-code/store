@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "password": "wes",
+        "email": "wes@example.com",
+        "name": "Wes Bos",
+        "hearts": ["58c039938060197ca0b52d4d", "58c03a428060197ca0b52d4f"]
+    },
+    {
+        "id": 2,
+        "password": "debbie",
+        "email": "debbie@example.com",
+        "name": "Debbie Downer",
+        "hearts": []
+    },
+    {
+        "id": 3,
+        "password": "beau",
+        "email": "beau@example.com",
+        "name": "Beau",
+        "hearts": ["58c061518060197ca0b52d5e"]
+    }
+]

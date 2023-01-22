@@ -101,7 +101,8 @@ export const updateStore = async (req: Request, res: Response) => {
 // query stores in different ways
 export const getStores = async (req: Request, res: Response) => {
     const { page } = req.params
-    const stores = await storeService.getStores({ page: parseInt(page) ?? 1 })
+    const result = await storeService.getStores({ page: parseInt(page) ?? 1 })
+    const stores = hydration.hydrateStoresWithTags(result)
     res.json({ data: stores })
 }
 
@@ -115,7 +116,9 @@ export const getStoreBySlug = async (req: Request, res: Response) => {
 
 export const getStoresByTag = async (req: Request, res: Response) => {
     const { tag } = req.params
+    const tagList = await storeService.getTags()
     const result = await storeService.getStoreByTag(tag)
+
     const stores = hydration.hydrateStoresWithTags(result)
-    res.json({ data: stores })
+    res.json({ data: { stores, tags: tagList } })
 }
