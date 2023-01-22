@@ -109,9 +109,10 @@ export const getStores = async (req: Request, res: Response) => {
 
 export const getStoreBySlug = async (req: Request, res: Response) => {
     const { slug } = req.params
-    const store = await storeService.getStoreBySlug(slug)
+    const result = await storeService.getStoreBySlug(slug)
+    const store = hydration.hydrateStoresTagsReviews(result)
     res.json({
-        data: store,
+        data: store[0],
     })
 }
 

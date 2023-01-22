@@ -10,6 +10,7 @@ export const DBTableList = {
     REVIEW_TABLE: 'reviews',
     TAGS_TABLE: 'tags',
     STORES_TAGS_TABLE: 'stores_tags',
+    HEART_TABLE: 'hearts',
 }
 
 export default db

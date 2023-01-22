@@ -11,7 +11,7 @@ export async function up(knex: Knex): Promise<void> {
         table.string('location_address').notNullable()
         table.string('photo').nullable()
         table.integer('author').unsigned().notNullable().references('users.id')
-        table.timestamp('created_at').defaultTo(knex.raw('CURRENT_TIMESTAMP'))
+        table.timestamps()
     })
 }
 

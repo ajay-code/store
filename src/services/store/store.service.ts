@@ -3,6 +3,7 @@ import { Store } from '#src/models/store.model.js'
 import { StoresTags } from '#src/models/stores_tags.model.js'
 import { Tag } from '#src/models/tag.model.js'
 import { Knex } from 'knex'
+import { joinReviews } from './joinReviews.js'
 import { joinTagsStores } from './joinTagsStores.js'
 
 const limit = 10
@@ -66,9 +67,11 @@ export async function getStores(opt: { page: number }) {
 export async function getStoreBySlug(slug: string) {
     return db
         .table<Store>(DBTableList.STORE_TABLE)
-        .select('*')
+        .select('stores.*')
         .where('slug', slug)
-        .first()
+        .modify(joinTagsStores)
+        .modify(joinReviews)
+    // .first()
 }
 
 export async function countBySlug(slug: string, exceptStoreId?: number) {

@@ -4,6 +4,7 @@ import { Tag } from '#src/models/tag.model.js'
 import { Request, Response, Router } from 'express'
 import authRouter from './auth.routes.js'
 import protectedRouter from './protected.routes.js'
+import reviewRouter from './review.routes.js'
 import storeRouter from './store.routes.js'
 
 let apiRouter: Router
@@ -18,6 +19,6 @@ r.post('/tags', async (req: Request, res: Response) => {
 
 r.use(authRouter)
 r.use(storeRouter)
+r.use(reviewRouter)
 r.use('/', isAuthenticated, protectedRouter)
-
 export default apiRouter
