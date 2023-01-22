@@ -25,3 +25,8 @@ export const updateStoreSchema = z.object({
         return val.split(',').map((num) => parseInt(num))
     }, z.array(z.number())),
 })
+
+export const latLongSchema = z.object({
+    lat: z.preprocess((val: any) => parseFloat(val), z.number()),
+    long: z.preprocess((val: any) => parseFloat(val), z.number()),
+})

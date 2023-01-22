@@ -2,7 +2,11 @@ import db from '#src/lib/knex/db.js'
 import { Store, StoresTags } from '#src/models/index.js'
 import { storeService } from '#src/services/index.js'
 import { hydration } from '#src/utils/index.js'
-import { addStoreSchema, updateStoreSchema } from '#src/validators/index.js'
+import {
+    addStoreSchema,
+    latLongSchema,
+    updateStoreSchema,
+} from '#src/validators/index.js'
 import { Request, Response } from 'express'
 import { savePhoto } from './savePhoto.js'
 import { slugify } from './slugify.js'
@@ -123,4 +127,26 @@ export const getStoresByTag = async (req: Request, res: Response) => {
 
     const stores = hydration.hydrateStoresWithTags(result)
     res.json({ data: { stores, tags: tagList } })
+}
+
+export const getHearts = async (req: Request, res: Response) => {
+    const userId = req.payload.userId
+    const result = await storeService.getHeartsOfUser(userId)
+    const stores = hydration.hydrateStoresWithTags(result)
+    res.json({ data: stores })
+}
+
+export const heartStore = async (req: Request, res: Response) => {
+    const userId = req.payload.userId
+    const storeId = parseInt(req.params.id)
+
+    await storeService.toggleHeartStore(storeId, userId)
+
+    res.sendStatus(203)
+}
+
+export const getNearbyStores = async (req: Request, res: Response) => {
+    const { lat, long } = latLongSchema.parse(req.query)
+    const result = await storeService.getStoreNearPoint(long, lat)
+    res.json({ data: result })
 }

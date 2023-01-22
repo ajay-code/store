@@ -20,5 +20,6 @@ r.post('/tags', async (req: Request, res: Response) => {
 r.use(authRouter)
 r.use(storeRouter)
 r.use(reviewRouter)
-r.use('/', isAuthenticated, protectedRouter)
+r.use(protectedRouter)
+
 export default apiRouter

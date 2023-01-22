@@ -1,4 +1,5 @@
 import db, { DBTableList } from '#src/lib/knex/db.js'
+import { Hearts } from '#src/models/hearts.js'
 import { Store } from '#src/models/store.model.js'
 import { StoresTags } from '#src/models/stores_tags.model.js'
 import { Tag } from '#src/models/tag.model.js'
@@ -60,14 +61,14 @@ export async function getStores(opt: { page: number }) {
                 .limit(limit)
                 .offset(offset)
         })
-        .select('stores.*')
+        .select(`${DBTableList.STORE_TABLE}.*`)
         .modify(joinTagsStores)
 }
 
 export async function getStoreBySlug(slug: string) {
     return db
         .table<Store>(DBTableList.STORE_TABLE)
-        .select('stores.*')
+        .select(`${DBTableList.STORE_TABLE}.*`)
         .where('slug', slug)
         .modify(joinTagsStores)
         .modify(joinReviews)
@@ -98,6 +99,38 @@ export async function getStoreByTag(tag: string) {
         })
 }
 
+export async function getHeartsOfUser(user_id: number) {
+    return db
+        .table<Hearts>(DBTableList.HEART_TABLE)
+        .select(`${DBTableList.STORE_TABLE}.*`)
+        .where('user_id', user_id)
+        .innerJoin(DBTableList.STORE_TABLE, (qb) => {
+            qb.on(
+                `${DBTableList.STORE_TABLE}.id`,
+                '=',
+                `${DBTableList.HEART_TABLE}.store_id`
+            )
+        })
+        .modify(joinTagsStores)
+}
+
+export async function toggleHeartStore(store_id: number, user_id: number) {
+    const isHearted = await db
+        .table<Hearts>(DBTableList.HEART_TABLE)
+        .where({ store_id, user_id })
+        .first()
+    if (isHearted) {
+        return db
+            .table<Hearts>(DBTableList.HEART_TABLE)
+            .where({ store_id, user_id })
+            .delete()
+    }
+
+    return db
+        .table<Hearts>(DBTableList.HEART_TABLE)
+        .insert({ store_id, user_id })
+}
+
 export async function getTags() {
     return db.table<Tag>(DBTableList.TAGS_TABLE).select('*')
 }
@@ -106,16 +139,17 @@ export async function getStoreNearPoint(x: number, y: number, distance = 1000) {
     return db
         .table<Store>(DBTableList.STORE_TABLE)
         .select(
+            'id',
             'slug',
             'name',
+            'photo',
             'description',
             'location_address',
-            'location_coordinates',
-            'photo'
+            'location_coordinates'
         )
         .where(
             db.raw(
-                `ST_WITHIN(location_coordinates), ST_BUFFER(ST_POINT(${x}, ${y}), ${distance}))`
+                `ST_WITHIN(location_coordinates, ST_BUFFER(POINT(${x}, ${y}), ${distance}))`
             )
         )
 }
