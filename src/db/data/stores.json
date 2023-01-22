@@ -1,6 +1,6 @@
 [
     {
-        "_id": "58c039938060197ca0b52d4d",
+        "id": 1,
         "slug": "olive-oil",
         "name": "Olive Oil",
         "description": "Friendly atmosphere. Great selection of local brews. ",
@@ -15,7 +15,7 @@
         }
     },
     {
-        "_id": "58c039ee8060197ca0b52d4e",
+        "id": 2,
         "slug": "sourdough-on-king",
         "name": "Sour on King",
         "description": "Amazing selection of everything sour, fermented and tart. ",
@@ -30,7 +30,7 @@
         }
     },
     {
-        "_id": "58c03a428060197ca0b52d4f",
+        "id": 3,
         "slug": "the-french",
         "name": "The French",
         "description": "High end french restaurant on the hippest street in town. ",
@@ -45,7 +45,7 @@
         }
     },
     {
-        "_id": "58c03a958060197ca0b52d50",
+        "id": 4,
         "slug": "rust-city-brewery",
         "name": "Rust City Brewery",
         "description": "A family run urban coffee house, craft beer pub and brewpub combining our love of coffee, beer and people",
@@ -60,7 +60,7 @@
         }
     },
     {
-        "_id": "58c057838060197ca0b52d54",
+        "id": 5,
         "slug": "berkeley-north",
         "name": "Berkeley North",
         "description": "Set in the revitalized James St. North neighbourhood, Berkeley North is a West Coast inspired restaurant located on historic King William Street in the heart of downtown Hamilton.\r\n",
@@ -75,7 +75,7 @@
         }
     },
     {
-        "_id": "58c05aef8060197ca0b52d55",
+        "id": 6,
         "slug": "mezcal-tacos--tequila",
         "name": "Mezcal Tacos & Tequila",
         "description": "Familiar Mexican fare with a gourmet twist & housemade margaritas, plus a lively late-night scene.\r\n",
@@ -90,7 +90,7 @@
         }
     },
     {
-        "_id": "58c05b558060197ca0b52d56",
+        "id": 7,
         "slug": "two-black-sheep",
         "name": "Two Black Sheep",
         "description": "Intimate, rustic-chic bar providing oysters, charcuterie, cheese plates, wine & craft cocktails.\r\n",
@@ -105,7 +105,7 @@
         }
     },
     {
-        "_id": "58c05bcd8060197ca0b52d57",
+        "id": 8,
         "slug": "donut-monster",
         "name": "Donut Monster",
         "description": "Small-batch, from-scratch donuts available at select coffee shops on Thursdays, Fridays, and Saturdays.",
@@ -120,7 +120,7 @@
         }
     },
     {
-        "_id": "58c05c208060197ca0b52d58",
+        "id": 9,
         "slug": "the-harbour-diner",
         "name": "The Harbour Diner",
         "description": "Classic diner eats like eggs Benedict & club sandwiches star at this charming, old-timey nook.\r\n",
@@ -135,7 +135,7 @@
         }
     },
     {
-        "_id": "58c05f928060197ca0b52d59",
+        "id": 10,
         "slug": "charred",
         "name": "Charred",
         "description": "BBQ chicken prepared Portugese style over an open charcoal pit.",
@@ -150,7 +150,7 @@
         }
     },
     {
-        "_id": "58c05fd08060197ca0b52d5a",
+        "id": 11,
         "slug": "green-bar",
         "name": "Green Bar",
         "description": "Cheery counter-serve serving organic, health-conscious fare such as smoothies & simple vegan eats.\r\n",
@@ -165,7 +165,7 @@
         }
     },
     {
-        "_id": "58c060558060197ca0b52d5b",
+        "id": 12,
         "slug": "work",
         "name": "Work",
         "description": "Dive bar, unreal nachos and huge selection of beers on both on tap and in bottle. ",
@@ -180,7 +180,7 @@
         }
     },
     {
-        "_id": "58c060e98060197ca0b52d5d",
+        "id": 13,
         "slug": "born--raised",
         "name": "Born & Raised",
         "description": "Wood fired Pizzas, oysters and a modern take on classic Italian dishes. Great collection of locals beers. ",
@@ -195,7 +195,7 @@
         }
     },
     {
-        "_id": "58c0609b8060197ca0b52d5c",
+        "id": 14,
         "slug": "the-burnt-tongue",
         "name": "The Burnt Tongue",
         "description": "Counter-serve joint with an ever-changing selection of elevated soups, plus burgers & other fare.\r\n",
@@ -210,7 +210,7 @@
         }
     },
     {
-        "_id": "58c061518060197ca0b52d5e",
+        "id": 15,
         "slug": "bar-izakaya",
         "name": "Bar Izakaya",
         "description": "Incorporating local meats and produce with the finest Japanese ingredients. The menu consists of Rice bowls and Ramen, while the evening menu is served family style with small & medium sharing plates and house board options. ",
@@ -225,7 +225,7 @@
         }
     },
     {
-        "_id": "58c065dbbbb1a51e0d43a04f",
+        "id": 16,
         "slug": "mulberry-coffee",
         "name": "Mulberry Coffee",
         "description": "Chill cafe in the former lobby of an 1880s hotel serving coffee, sweets & panini, plus cocktails.\r\n",
