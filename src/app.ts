@@ -1,6 +1,7 @@
 import path from 'node:path'
 import express from 'express'
 import helmet from 'helmet'
+import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import * as middleware from '#src/middleware/index.js'
 import addRoutes from '#src/routes/index.routes.js'
@@ -8,6 +9,8 @@ import { fsUtils } from '#src/utils/index.js'
 
 const __dirname = fsUtils.getDirname(import.meta.url)
 const app = express()
+
+app.use(cors())
 
 /**
  * parse request
