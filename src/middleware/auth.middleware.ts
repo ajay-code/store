@@ -3,6 +3,7 @@ import db from '#src/lib/knex/db.js'
 import { Store } from '#src/models/index.js'
 import JWTService, { JWTPayload } from '#src/services/jwt.service.js'
 import { Request, Response } from 'express'
+import httpStatus from 'http-status'
 
 declare global {
     namespace Express {
@@ -20,7 +21,7 @@ export async function isAuthenticated(
 ) {
     const token = req.cookies.token
     if (!token) {
-        res.status(401).json({ error: 'no token provided' })
+        res.status(httpStatus.UNAUTHORIZED).json({ error: 'no token provided' })
         return
     }
 

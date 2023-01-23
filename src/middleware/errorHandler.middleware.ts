@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import * as z from 'zod'
+import httpStatus from 'http-status'
 
 function isHttpError(error: Error | HttpError): error is HttpError {
     return (error as HttpError).statusCode !== undefined
@@ -13,7 +14,7 @@ export function errorHandler(
 ) {
     const message = error.message ?? 'Something Went Wrong'
     const errorName = error.name ?? 'Error'
-    let statusCode = 500
+    let statusCode: number = httpStatus.INTERNAL_SERVER_ERROR
 
     console.log(error)
     if (isHttpError(error)) {
@@ -21,21 +22,18 @@ export function errorHandler(
     }
 
     if (error instanceof z.ZodError) {
-        res.status(400).json({ error: error.issues })
+        res.status(httpStatus.BAD_REQUEST).json({ error: error.issues })
         return
     }
 
     // default handling of unknown error
     if (process.env.NODE_ENV === 'production') {
-        res.status(500).json({
-            error: { msg: 'something went wrong', name: 'Error' },
+        res.status(statusCode).json({
+            error: { msg: message, name: errorName },
         })
         return
     }
     res.status(statusCode).json({
-        error: {
-            msg: message,
-            name: errorName,
-        },
+        error,
     })
 }

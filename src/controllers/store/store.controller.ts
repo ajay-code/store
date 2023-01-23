@@ -10,6 +10,7 @@ import {
 import { Request, Response } from 'express'
 import { savePhoto } from './savePhoto.js'
 import { slugify } from './slugify.js'
+import httpStatus from 'http-status'
 
 export { uploadPhoto } from './uploadPhoto.js'
 
@@ -61,7 +62,7 @@ export const createStore = async (req: Request, res: Response) => {
         db.table<StoresTags>('stores_tags')
     )
 
-    res.send(storeData)
+    res.sendStatus(httpStatus.CREATED)
 }
 
 export const updateStore = async (req: Request, res: Response) => {
@@ -99,7 +100,7 @@ export const updateStore = async (req: Request, res: Response) => {
         db.table<StoresTags>('stores_tags')
     )
 
-    res.send('updated store with id: ' + id)
+    res.sendStatus(httpStatus.NO_CONTENT)
 }
 
 // query stores in different ways
@@ -107,6 +108,7 @@ export const getStores = async (req: Request, res: Response) => {
     const { page } = req.params
     const result = await storeService.getStores({ page: parseInt(page) ?? 1 })
     const stores = hydration.hydrateStoresWithTags(result)
+
     res.json({ data: stores })
 }
 
@@ -114,6 +116,7 @@ export const getStoreBySlug = async (req: Request, res: Response) => {
     const { slug } = req.params
     const result = await storeService.getStoreBySlug(slug)
     const store = hydration.hydrateStoresTagsReviews(result)
+
     res.json({
         data: store[0],
     })
@@ -123,8 +126,8 @@ export const getStoresByTag = async (req: Request, res: Response) => {
     const { tag } = req.params
     const tagList = await storeService.getTags()
     const result = await storeService.getStoreByTag(tag)
-
     const stores = hydration.hydrateStoresWithTags(result)
+
     res.json({ data: { stores, tags: tagList } })
 }
 
@@ -132,6 +135,7 @@ export const getHearts = async (req: Request, res: Response) => {
     const userId = req.payload.userId
     const result = await storeService.getHeartsOfUser(userId)
     const stores = hydration.hydrateStoresWithTags(result)
+
     res.json({ data: stores })
 }
 
@@ -141,11 +145,12 @@ export const heartStore = async (req: Request, res: Response) => {
 
     await storeService.toggleHeartStore(storeId, userId)
 
-    res.sendStatus(203)
+    res.sendStatus(httpStatus.NO_CONTENT)
 }
 
 export const getNearbyStores = async (req: Request, res: Response) => {
     const { lat, long } = latLongSchema.parse(req.query)
     const result = await storeService.getStoreNearPoint(long, lat)
+
     res.json({ data: result })
 }

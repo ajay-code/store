@@ -8,6 +8,7 @@ import { makeJwtTokenForUser } from '../helpers/index.js'
 import { loginSchema } from '#src/validators/auth.validators.js'
 import { Request, Response } from 'express'
 import { z } from 'zod'
+import httpStatus from 'http-status'
 
 const authService = new AuthService()
 const userService = new UserService()
@@ -32,7 +33,8 @@ export const login = async (req: Request, res: Response) => {
 
 export const logout = async (req: Request, res: Response) => {
     res.clearCookie('token')
-    res.send('logged out')
+
+    res.sendStatus(httpStatus.NO_CONTENT)
 }
 
 const forgotSchema = z.object({
@@ -59,7 +61,8 @@ export const forgot = async (req: Request, res: Response) => {
         to: user.email,
         resetLink,
     })
-    res.json({ msg: 'email sent' })
+
+    res.sendStatus(httpStatus.NO_CONTENT)
 }
 
 export const reset = async (req: Request, res: Response) => {
@@ -82,5 +85,6 @@ export const reset = async (req: Request, res: Response) => {
     }
 
     await userService.resetPassword(user, password, db.table<User>('users'))
-    res.json({ msg: 'password changed' })
+
+    res.sendStatus(httpStatus.NO_CONTENT)
 }
