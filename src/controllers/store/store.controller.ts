@@ -1,3 +1,4 @@
+import config from '#src/config/index.js'
 import db from '#src/lib/knex/db.js'
 import { Store, StoresTags } from '#src/models/index.js'
 import { storeService } from '#src/services/index.js'
@@ -8,9 +9,9 @@ import {
     updateStoreSchema,
 } from '#src/validators/index.js'
 import { Request, Response } from 'express'
+import httpStatus from 'http-status'
 import { savePhoto } from './savePhoto.js'
 import { slugify } from './slugify.js'
-import httpStatus from 'http-status'
 
 export { uploadPhoto } from './uploadPhoto.js'
 
@@ -106,10 +107,21 @@ export const updateStore = async (req: Request, res: Response) => {
 // query stores in different ways
 export const getStores = async (req: Request, res: Response) => {
     const { page } = req.params
-    const result = await storeService.getStores({ page: parseInt(page ?? 1) })
+    const [result, count] = await Promise.all([
+        storeService.getStores({ page: parseInt(page ?? 1) }),
+        storeService.getStoreCount(),
+    ])
     const stores = hydration.hydrateStoresWithTags(result)
 
-    res.json({ data: stores })
+    const pages = Math.ceil(
+        (count[0].count as number) / config.PAGINATION.limit
+    )
+    res.json({
+        data: stores,
+        count: count[0].count,
+        pages,
+        limit: config.PAGINATION.limit,
+    })
 }
 
 export const getStoreBySlug = async (req: Request, res: Response) => {
@@ -118,7 +130,7 @@ export const getStoreBySlug = async (req: Request, res: Response) => {
     const store = hydration.hydrateStoresTagsReviews(result)
 
     res.json({
-        data: store[0],
+        data: store,
     })
 }
 

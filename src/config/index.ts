@@ -1,6 +1,7 @@
 import './loadEnv.js'
 import DB from './database.config.js'
 import EMAIL from './email.config.js'
+import * as PAGINATION from './pagination.js'
 
 const NODE_ENV = process.env.NODE_ENV || 'development'
 const BASE_URL = process.env.BASE_URL || 'http://localhost'
@@ -20,6 +21,7 @@ export const config = {
     APP_KEY,
     DB,
     EMAIL,
+    PAGINATION,
 }
 
 export default config

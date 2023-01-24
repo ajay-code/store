@@ -4,10 +4,11 @@ import { Store } from '#src/models/store.model.js'
 import { StoresTags } from '#src/models/stores_tags.model.js'
 import { Tag } from '#src/models/tag.model.js'
 import { Knex } from 'knex'
+import { joinReviewCount } from './joinReviewCount.js'
 import { joinReviews } from './joinReviews.js'
 import { joinTagsStores } from './joinTagsStores.js'
 
-const limit = 10
+const limit = 6
 export async function addStore(store: any, Store: Knex.QueryBuilder<Store>) {
     const [store_id] = await Store.insert({
         ...store,
@@ -57,12 +58,18 @@ export async function getStores(opt: { page: number }) {
         .table<Store>(DBTableList.STORE_TABLE)
         .with('stores', (qb) => {
             qb.table<Store>(DBTableList.STORE_TABLE)
-                .select('*')
+                .select(`${DBTableList.STORE_TABLE}.*`)
+                .modify(joinReviewCount)
                 .limit(limit)
                 .offset(offset)
         })
         .select(`${DBTableList.STORE_TABLE}.*`)
+        .orderBy('created_at', 'desc')
         .modify(joinTagsStores)
+}
+
+export async function getStoreCount() {
+    return db.table<Store>(DBTableList.STORE_TABLE).count({ count: '*' })
 }
 
 export async function getStoreBySlug(slug: string) {
@@ -72,7 +79,6 @@ export async function getStoreBySlug(slug: string) {
         .where('slug', slug)
         .modify(joinTagsStores)
         .modify(joinReviews)
-    // .first()
 }
 
 export async function countBySlug(slug: string, exceptStoreId?: number) {
