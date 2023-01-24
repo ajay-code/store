@@ -8,7 +8,7 @@ export function joinReviews(
         'reviews.id as review_id',
         'reviews.text as review_text',
         'reviews.rating as review_rating'
-    ).innerJoin('reviews', (qb) => {
+    ).leftJoin('reviews', (qb) => {
         qb.on('reviews.store', '=', `${cteOrTableName}.id`)
     })
 }
