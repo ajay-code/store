@@ -27,7 +27,7 @@ interface KnexFile {
 export const knexFile: KnexFile = {
     development: {
         client,
-        debug: true,
+        // debug: true,
         connection,
         pool: {
             min: 0,

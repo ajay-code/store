@@ -11,6 +11,7 @@ const __dirname = fsUtils.getDirname(import.meta.url)
 const app = express()
 
 app.use(cors())
+app.set('trust proxy', true)
 
 /**
  * parse request

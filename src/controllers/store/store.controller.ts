@@ -106,7 +106,7 @@ export const updateStore = async (req: Request, res: Response) => {
 // query stores in different ways
 export const getStores = async (req: Request, res: Response) => {
     const { page } = req.params
-    const result = await storeService.getStores({ page: parseInt(page) ?? 1 })
+    const result = await storeService.getStores({ page: parseInt(page ?? 1) })
     const stores = hydration.hydrateStoresWithTags(result)
 
     res.json({ data: stores })
