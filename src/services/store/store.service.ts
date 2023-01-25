@@ -1,5 +1,7 @@
+import config from '#src/config/index.js'
 import db, { DBTableList } from '#src/lib/knex/db.js'
 import { Hearts } from '#src/models/hearts.js'
+import { Review } from '#src/models/review.model.js'
 import { Store } from '#src/models/store.model.js'
 import { StoresTags } from '#src/models/stores_tags.model.js'
 import { Tag } from '#src/models/tag.model.js'
@@ -8,7 +10,8 @@ import { joinReviewCount } from './joinReviewCount.js'
 import { joinReviews } from './joinReviews.js'
 import { joinTagsStores } from './joinTagsStores.js'
 
-const limit = 6
+const limit = config.PAGINATION.limit
+
 export async function addStore(store: any, Store: Knex.QueryBuilder<Store>) {
     const [store_id] = await Store.insert({
         ...store,
@@ -158,4 +161,23 @@ export async function getStoreNearPoint(x: number, y: number, distance = 1000) {
                 `ST_WITHIN(location_coordinates, ST_BUFFER(POINT(${x}, ${y}), ${distance}))`
             )
         )
+}
+
+export async function getTopStores() {
+    return db
+        .table<Store>(DBTableList.STORE_TABLE)
+        .innerJoin<Review>(DBTableList.REVIEW_TABLE, (qb) => {
+            qb.on(
+                db.raw(
+                    `${DBTableList.STORE_TABLE}.id = ${DBTableList.REVIEW_TABLE}.store`
+                )
+            )
+        })
+        .select(
+            db.raw(
+                `${DBTableList.STORE_TABLE}.*, AVG(reviews.rating) as avg_rating`
+            )
+        )
+        .groupBy('stores.id')
+        .having(db.raw('COUNT(reviews.id) > 1'))
 }

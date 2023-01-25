@@ -124,6 +124,14 @@ export const getStores = async (req: Request, res: Response) => {
     })
 }
 
+export const getTopStores = async (req: Request, res: Response) => {
+    const result = await storeService.getTopStores()
+
+    res.json({
+        data: result,
+    })
+}
+
 export const getStoreBySlug = async (req: Request, res: Response) => {
     const { slug } = req.params
     const result = await storeService.getStoreBySlug(slug)

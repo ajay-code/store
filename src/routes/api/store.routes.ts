@@ -9,6 +9,7 @@ let storeRouter: Router
 let r = (storeRouter = Router())
 
 r.get('/', storeController.getStores)
+r.get('/top', storeController.getTopStores)
 r.get('/stores', storeController.getStores)
 r.get('/stores/page/:page', storeController.getStores)
 r.get('/stores/near', storeController.getNearbyStores)
