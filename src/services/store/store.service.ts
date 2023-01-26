@@ -180,4 +180,6 @@ export async function getTopStores() {
         )
         .groupBy('stores.id')
         .having(db.raw('COUNT(reviews.id) > 1'))
+        .orderBy('avg_rating', 'desc')
+        .limit(10)
 }
