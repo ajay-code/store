@@ -64,7 +64,7 @@
     },
     {
         "author": 1,
-        "store": "58c05c208060197ca0b52d58",
+        "store": 9,
         "text": "Great spot for Brunch 👌 ",
         "rating": 5,
         "created": "2017-03-08T22:39:29.383Z"
@@ -169,7 +169,7 @@
     },
     {
         "author": 2,
-        "store": "58c05c208060197ca0b52d58",
+        "store": 9,
         "text": "I like things that are consistent ",
         "rating": 3,
         "created": "2017-03-08T22:49:28.910Z"
@@ -253,7 +253,7 @@
     },
     {
         "author": 3,
-        "store": "58c05c208060197ca0b52d58",
+        "store": 9,
         "text": "Eggs Benny 🍳",
         "rating": 4,
         "created": "2017-03-13T14:12:08.255Z"
