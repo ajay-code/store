@@ -107,11 +107,10 @@ export const updateStore = async (req: Request, res: Response) => {
 // query stores in different ways
 export const getStores = async (req: Request, res: Response) => {
     const { page } = req.params
-    const [result, count] = await Promise.all([
+    const [stores, count] = await Promise.all([
         storeService.getStores({ page: parseInt(page ?? 1) }),
         storeService.getStoreCount(),
     ])
-    const stores = hydration.hydrateStoresWithTags(result)
 
     const pages = Math.ceil(
         (count[0].count as number) / config.PAGINATION.limit

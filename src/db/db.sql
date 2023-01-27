@@ -1,12 +1,18 @@
 -- paginated stoers with join to tags
-WITH paginated_stores
-    AS (SELECT * FROM stores LIMIT 6 OFFSET 6)
-SELECT s.id, s.name, tags.tag
-FROM paginated_stores as s
-LEFT JOIN stores_tags
-    ON s.id = stores_tags.store_id
-LEFT JOIN tags
-    ON tags.id = stores_tags.tag_id;
+select
+  stores.id,
+  stores.name,
+  stores.slug,
+  stores.description,
+  stores.photo,
+  COUNT(reviews.id) as review_count
+from
+  stores
+  left join reviews on reviews.store = stores.id
+group by
+  stores.id
+order by
+  stores.created_at desc
 
 -- paginated stores with review count and join tags
 with stores 

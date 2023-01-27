@@ -58,17 +58,18 @@ export async function removeTagsFromStore(
 export async function getStores(opt: { page: number }) {
     const offset = limit * (opt.page - 1)
     return db
-        .table<Store>(DBTableList.STORE_TABLE)
-        .with('stores', (qb) => {
-            qb.table<Store>(DBTableList.STORE_TABLE)
-                .select(`${DBTableList.STORE_TABLE}.*`)
-                .modify(joinReviewCount)
-                .limit(limit)
-                .offset(offset)
-        })
-        .select(`${DBTableList.STORE_TABLE}.*`)
-        .orderBy('created_at', 'desc')
-        .modify(joinTagsStores)
+        .table<Store>('stores')
+        .select(
+            'stores.id',
+            'stores.name',
+            'stores.slug',
+            'stores.description',
+            'stores.photo'
+        )
+        .modify(joinReviewCount)
+        .orderBy('stores.created_at', 'desc')
+        .limit(limit)
+        .offset(offset)
 }
 
 export async function getStoreCount() {
@@ -141,7 +142,17 @@ export async function toggleHeartStore(store_id: number, user_id: number) {
 }
 
 export async function getTags() {
-    return db.table<Tag>(DBTableList.TAGS_TABLE).select('*')
+    return db
+        .table<Tag>('tags')
+        .select('tags.*')
+        .select(db.raw('COUNT(stores.id) as store_count'))
+        .leftJoin('stores_tags', (qb) => {
+            qb.on(db.raw('stores_tags.tag_id = tags.id'))
+        })
+        .leftJoin('stores', (qb) => {
+            qb.on(db.raw('stores.id = stores_tags.store_id'))
+        })
+        .groupBy('tags.id')
 }
 
 export async function getStoreNearPoint(x: number, y: number, distance = 1000) {
