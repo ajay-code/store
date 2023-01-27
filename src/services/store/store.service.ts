@@ -78,10 +78,14 @@ export async function getStoreCount() {
 
 export async function getStoreBySlug(slug: string) {
     return db
-        .table<Store>(DBTableList.STORE_TABLE)
-        .select(`${DBTableList.STORE_TABLE}.*`)
-        .where('slug', slug)
-        .modify(joinTagsStores)
+        .with('stores', (qb) => {
+            qb.table<Store>(DBTableList.STORE_TABLE)
+                .select(`${DBTableList.STORE_TABLE}.*`)
+                .where('slug', slug)
+                .modify(joinTagsStores)
+        })
+        .select('stores.*')
+        .from('stores')
         .modify(joinReviews)
 }
 

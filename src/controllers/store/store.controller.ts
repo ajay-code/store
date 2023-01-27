@@ -134,7 +134,7 @@ export const getTopStores = async (req: Request, res: Response) => {
 export const getStoreBySlug = async (req: Request, res: Response) => {
     const { slug } = req.params
     const result = await storeService.getStoreBySlug(slug)
-    const store = hydration.hydrateStoresTagsReviews(result)
+    const store = hydration.hydrateStoresReviews(result)
 
     res.json({
         data: store,
@@ -144,16 +144,14 @@ export const getStoreBySlug = async (req: Request, res: Response) => {
 export const getStoresByTag = async (req: Request, res: Response) => {
     const { tag } = req.params
     const tagList = await storeService.getTags()
-    const result = await storeService.getStoreByTag(tag)
-    const stores = hydration.hydrateStoresWithTags(result)
+    const stores = await storeService.getStoreByTag(tag)
 
     res.json({ data: { stores, tags: tagList } })
 }
 
 export const getHearts = async (req: Request, res: Response) => {
     const userId = req.payload.userId
-    const result = await storeService.getHeartsOfUser(userId)
-    const stores = hydration.hydrateStoresWithTags(result)
+    const stores = await storeService.getHeartsOfUser(userId)
 
     res.json({ data: stores })
 }

@@ -6,10 +6,6 @@ interface StoreWithTags extends Store {
     tags: Tag[]
 }
 
-export function hydrateStoresWithTags(data: any) {
-    return data
-}
-
 function isUniqueIn(object: object, others: object[]) {
     let isUnique = true
     for (let to of others) {
@@ -21,35 +17,39 @@ function isUniqueIn(object: object, others: object[]) {
     return isUnique
 }
 
-export function hydrateStoresTagsReviews(input: any) {
+export function hydrateStoresReviews(input: any) {
     const hydrated: StoreWithTags[] = [],
         lookup: any = {}
 
     for (let store of input) {
         if (!lookup[store.id]) {
             lookup[store.id] = store
-            lookup[store.id].tags = []
             lookup[store.id].reviews = []
             hydrated.push(lookup[store.id])
-        }
-        if (store.tag_id && store.tag) {
-            lookup[store.id].tags.push({ id: store.tag_id, tag: store.tag })
         }
         if (store.review_id && store.review_text && store.review_rating) {
             const review = {
                 id: store.review_id,
                 text: store.review_text,
                 rating: store.review_rating,
+                created_at: store.review_created_at,
+                author: {
+                    id: store.review_author_id,
+                    name: store.review_author_name,
+                    email: store.review_author_email,
+                },
             }
             if (isUniqueIn(review, lookup[store.id].reviews)) {
                 lookup[store.id].reviews.push(review)
             }
         }
-        delete lookup[store.id].tag_id
-        delete lookup[store.id].tag
+
         delete lookup[store.id].review_id
         delete lookup[store.id].review_text
         delete lookup[store.id].review_rating
+        delete lookup[store.id].review_author_id
+        delete lookup[store.id].review_author_name
+        delete lookup[store.id].review_author_email
     }
 
     return hydrated
