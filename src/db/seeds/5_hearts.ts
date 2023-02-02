@@ -11,5 +11,5 @@ export const seed = async (knex: Knex) => {
         }
     }
 
-    await knex.table(DBTableList.HEART_TABLE).insert(heartList)
+    await knex.table(DBTableList.HEART).insert(heartList)
 }

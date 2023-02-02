@@ -6,9 +6,9 @@ import { Knex } from 'knex'
  * @returns { Promise<void> }
  */
 export const seed = async function (knex: Knex) {
-    await knex(DBTableList.TAGS_TABLE).del()
+    await knex(DBTableList.TAGS).del()
 
     const tagList = tags.map((tag) => ({ tag }))
 
-    await knex(DBTableList.TAGS_TABLE).insert(tagList)
+    await knex(DBTableList.TAGS).insert(tagList)
 }

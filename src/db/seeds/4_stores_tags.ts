@@ -5,7 +5,7 @@ import stores from '../data/stores.json' assert { type: 'json' }
 import tags from '../data/tags.json' assert { type: 'json' }
 
 export const seed = async function (knex: Knex) {
-    await knex.table(DBTableList.STORES_TAGS_TABLE).del()
+    await knex.table(DBTableList.STORES_TAGS).del()
 
     const storesTagsList = []
     for (let store of stores) {
@@ -15,5 +15,5 @@ export const seed = async function (knex: Knex) {
         }
     }
 
-    await knex.table(DBTableList.STORES_TAGS_TABLE).insert(storesTagsList)
+    await knex.table(DBTableList.STORES_TAGS).insert(storesTagsList)
 }

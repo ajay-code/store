@@ -5,6 +5,7 @@ export const addStoreSchema = z.object({
     description: z.string(),
     location_address: z.string(),
     location_coordinates: z.preprocess((val: any) => {
+        if (typeof val === 'string') val = val.split(',')
         return val.map((str: string) => parseFloat(str))
     }, z.tuple([z.number(), z.number()])),
     tags: z.preprocess((val: any) => {

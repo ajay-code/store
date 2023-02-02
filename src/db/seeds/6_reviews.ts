@@ -17,5 +17,5 @@ export const seed = async (knex: Knex) => {
         id++
     }
 
-    await knex.table(DBTableList.REVIEW_TABLE).insert(reviewList)
+    await knex.table(DBTableList.REVIEW).insert(reviewList)
 }

@@ -14,7 +14,6 @@ const r = (apiRouter = Router())
 r.post('/tags', async (req: Request, res: Response) => {
     const { tag } = req.body
     const result = await db.table<Tag>('tags').insert({ tag })
-    console.log(result)
     res.json(result)
 })
 

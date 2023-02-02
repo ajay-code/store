@@ -16,7 +16,7 @@ export async function addStore(store: any, Store: Knex.QueryBuilder<Store>) {
     const [store_id] = await Store.insert({
         ...store,
         location_coordinates: db.raw(
-            `ST_POINT (${store.location_coordinates[0]}, ${store.location_coordinates[1]})`
+            `POINT (${store.location_coordinates[0]}, ${store.location_coordinates[1]})`
         ),
     })
 
