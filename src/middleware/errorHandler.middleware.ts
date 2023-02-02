@@ -34,6 +34,8 @@ export function errorHandler(
         return
     }
     res.status(statusCode).json({
-        error,
+        error: {
+            msg: message,
+        },
     })
 }
